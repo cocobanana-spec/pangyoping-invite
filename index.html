@@ -16,7 +16,7 @@
 .card h2{margin:0 0 10px;font-size:13px;color:var(--pink);letter-spacing:.3px}
 .card p{margin:0 0 8px;font-size:15px}.card p:last-child{margin-bottom:0}
 .row{display:flex;gap:10px;padding:8px 0;border-top:1px solid var(--line)}.row:first-of-type{border-top:0}
-.k{min-width:56px;color:var(--sub);font-size:13px;padding-top:2px}.v{flex:1;font-size:15px}
+.k{min-width:64px;color:var(--sub);font-size:13px;padding-top:2px}.v{flex:1;font-size:15px}
 .sub{color:var(--sub);font-size:13px}
 .acct{font-weight:700;font-size:17px;letter-spacing:.2px}
 .foot{color:var(--sub);font-size:12px;text-align:center;margin-top:20px}
@@ -25,19 +25,19 @@
 </head>
 <body>
 <div class="wrap">
-  <div id="loading" class="card"><p>초대장을 불러오는 중이에요.</p></div>
-  <div id="error" class="card hidden"><p>초대장을 찾을 수 없어요. 초대한 분께 다시 받아 주세요.</p></div>
+  <div id="loading" class="card"><p>초대장을 준비하고 있습니다.</p></div>
+  <div id="error" class="card hidden"><p>초대장을 찾지 못했습니다. 초대해 주신 분께 다시 받아 주세요.</p></div>
   <div id="page" class="hidden">
-    <div class="hero"><h1>판교핑에 초대합니다</h1><p id="hero-sub"></p></div>
-    <div class="card"><h2>판교핑은</h2><div id="intro"></div></div>
+    <div class="hero"><h1>판교핑의 자리에 모십니다</h1><p id="hero-sub"></p></div>
+    <div class="card"><h2>판교핑을 소개합니다</h2><div id="intro"></div></div>
     <div class="card"><h2>이번 모임</h2>
-      <div class="row"><div class="k">일시</div><div class="v" id="when"></div></div>
+      <div class="row"><div class="k">모시는 날</div><div class="v" id="when"></div></div>
       <div class="row hidden" id="place-row"><div class="k">장소</div><div class="v"><span id="place"></span><br><span class="sub" id="address"></span></div></div>
-      <div class="row hidden" id="talks-row"><div class="k">발제</div><div class="v" id="talks"></div></div>
+      <div class="row hidden" id="talks-row"><div class="k">나눌 이야기</div><div class="v" id="talks"></div></div>
       <div class="row hidden" id="memo-row"><div class="k">안내</div><div class="v" id="memo"></div></div>
     </div>
-    <div class="card"><h2>게스트 안내</h2><div id="guest-note"></div><p class="acct hidden" id="account"></p></div>
-    <div class="foot">판교 HR 담당자 스터디 · 판교핑</div>
+    <div class="card"><h2>오시는 분께 드리는 안내</h2><div id="guest-note"></div><p class="acct hidden" id="account"></p></div>
+    <div class="foot">귀한 걸음, 기다리고 있겠습니다.<br>판교 HR 담당자들의 작은 모임 · 판교핑</div>
   </div>
 </div>
 <script>
@@ -57,7 +57,9 @@
   }
   function kst(iso) {
     var d = new Date(new Date(iso).getTime() + 9 * 3600000);
-    return (d.getUTCMonth() + 1) + '월 ' + d.getUTCDate() + '일 (' + DAYS[d.getUTCDay()] + ') ' + d.getUTCHours() + ':' + String(d.getUTCMinutes()).padStart(2, '0');
+    var h = d.getUTCHours(), m = d.getUTCMinutes();
+    var time = (h < 12 ? '오전 ' : '오후 ') + (h % 12 || 12) + '시' + (m ? ' ' + m + '분' : '');
+    return (d.getUTCMonth() + 1) + '월 ' + d.getUTCDate() + '일 (' + DAYS[d.getUTCDay()] + ') ' + time;
   }
   function fail() { hide('loading'); show('error'); }
   if (!token) { fail(); return; }
@@ -65,14 +67,14 @@
     .then(function (r) { if (!r.ok) throw new Error('not found'); return r.json(); })
     .then(function (d) {
       document.title = '판교핑 초대장 · ' + (d.meeting.topic || '정기 모임');
-      $('hero-sub').textContent = d.guest.name + ' 님, ' + d.inviter + ' 님이 초대했어요.';
+      $('hero-sub').textContent = d.guest.name + ' 님, ' + d.inviter + ' 님의 초대로 이번 모임에 귀한 자리를 마련했습니다.';
       paragraphs($('intro'), d.settings.invite_intro);
       $('when').textContent = kst(d.meeting.starts_at);
       if (d.meeting.place) { $('place').textContent = d.meeting.place; $('address').textContent = d.meeting.address || ''; show('place-row'); }
       if (d.talks && d.talks.length) {
         var box = $('talks'); box.textContent = '';
         d.talks.forEach(function (t) {
-          var p = document.createElement('p'); p.textContent = '· ' + (t.topic || '주제 준비 중');
+          var p = document.createElement('p'); p.textContent = t.topic || '주제 준비 중';
           var who = document.createElement('span'); who.className = 'sub'; who.textContent = ' — ' + (t.presenter || ''); p.appendChild(who); box.appendChild(p);
         });
         show('talks-row');
