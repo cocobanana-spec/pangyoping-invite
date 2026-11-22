@@ -41,6 +41,13 @@
   </div>
 </div>
 <script>
+  // 지도 링크면 "지도 보기" 링크로, 예전 주소 글이면 글 그대로
+  function addressLink(el, address) {
+    if (!address) return;
+    if (/^https?:\/\//i.test(address)) { var a = document.createElement('a'); a.href = address; a.target = '_blank'; a.rel = 'noopener'; a.textContent = '지도 보기'; el.appendChild(a); }
+    else el.textContent = address;
+  }
+
 (function () {
   var API = 'https://mniuxrjfivkgtfofzwcf.supabase.co/functions/v1/invite';
   var DAYS = ['일', '월', '화', '수', '목', '금', '토'];
@@ -70,7 +77,7 @@
       $('hero-sub').textContent = d.guest.name + ' 님, ' + d.inviter + ' 님의 초대로 이번 모임에 귀한 자리를 마련했습니다.';
       paragraphs($('intro'), d.settings.invite_intro);
       $('when').textContent = kst(d.meeting.starts_at);
-      if (d.meeting.place) { $('place').textContent = d.meeting.place; $('address').textContent = d.meeting.address || ''; show('place-row'); }
+      if (d.meeting.place) { $('place').textContent = d.meeting.place; addressLink($('address'), d.meeting.address); show('place-row'); }
       if (d.talks && d.talks.length) {
         var box = $('talks'); box.textContent = '';
         d.talks.forEach(function (t) {

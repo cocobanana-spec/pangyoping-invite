@@ -46,6 +46,13 @@
   </div>
 </div>
 <script>
+  // 지도 링크면 "지도 보기" 링크로, 예전 주소 글이면 글 그대로
+  function addressLink(el, address) {
+    if (!address) return;
+    if (/^https?:\/\//i.test(address)) { var a = document.createElement('a'); a.href = address; a.target = '_blank'; a.rel = 'noopener'; a.textContent = '지도 보기'; el.appendChild(a); }
+    else el.textContent = address;
+  }
+
 (function () {
   var API = 'https://mniuxrjfivkgtfofzwcf.supabase.co/functions/v1/meeting-share';
   var APP_STORE = 'https://apps.apple.com/kr/app/id6831417547';
@@ -96,7 +103,7 @@
       $('topic').textContent = m.topic || '정기 모임';
       $('hero-sub').textContent = kst(m.starts_at) + (m.place ? ' · ' + m.place : '');
       $('when').textContent = kst(m.starts_at);
-      if (m.place) { $('place').textContent = m.place; $('address').textContent = m.address || ''; show('place-row'); }
+      if (m.place) { $('place').textContent = m.place; addressLink($('address'), m.address); show('place-row'); }
       if (d.talks && d.talks.length) {
         var box = $('talks'); box.textContent = '';
         d.talks.forEach(function (t) {
