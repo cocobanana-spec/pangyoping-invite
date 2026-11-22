@@ -73,7 +73,7 @@
   fetch(API + '?t=' + encodeURIComponent(token) + '&format=json', { headers: { Accept: 'application/json' } })
     .then(function (r) { if (!r.ok) throw new Error('not found'); return r.json(); })
     .then(function (d) {
-      document.title = '판교핑 초대장 · ' + (d.meeting.topic || '정기 모임');
+      document.title = '판교핑 초대장';
       $('hero-sub').textContent = d.guest.name + ' 님, ' + d.inviter + ' 님의 초대로 이번 모임에 귀한 자리를 마련했습니다.';
       paragraphs($('intro'), d.settings.invite_intro);
       $('when').textContent = kst(d.meeting.starts_at);

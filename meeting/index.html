@@ -98,9 +98,9 @@
     .then(function (d) {
       var m = d.meeting;
       var month = new Date(new Date(m.starts_at).getTime() + 9 * 3600000).getUTCMonth() + 1;
-      document.title = '판교핑 ' + month + '월 모임 · ' + (m.topic || '정기 모임');
-      $('eyebrow').textContent = '판교핑 ' + month + '월 모임';
-      $('topic').textContent = m.topic || '정기 모임';
+      document.title = '판교핑 ' + month + '월 모임';
+      $('eyebrow').textContent = month + '월 모임';
+      $('topic').textContent = '판교핑 모임';
       $('hero-sub').textContent = kst(m.starts_at) + (m.place ? ' · ' + m.place : '');
       $('when').textContent = kst(m.starts_at);
       if (m.place) { $('place').textContent = m.place; addressLink($('address'), m.address); show('place-row'); }
